@@ -15,6 +15,10 @@
 		8D3C24E31FFC7CA10007B6EB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D3C24E21FFC7CA10007B6EB /* main.m */; };
 		8D3C24ED1FFC7CA10007B6EB /* GestureUnClockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D3C24EC1FFC7CA10007B6EB /* GestureUnClockTests.m */; };
 		8D3C24F81FFC7CA10007B6EB /* GestureUnClockUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D3C24F71FFC7CA10007B6EB /* GestureUnClockUITests.m */; };
+		8D3C25081FFCCDBF0007B6EB /* EH_GestureCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D3C25071FFCCDBF0007B6EB /* EH_GestureCircleView.m */; };
+		8D3C250B1FFCCF700007B6EB /* EH_GestureDragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D3C250A1FFCCF700007B6EB /* EH_GestureDragView.m */; };
+		8D3C250E1FFCE5A10007B6EB /* EHGeatureSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D3C250D1FFCE5A10007B6EB /* EHGeatureSettingViewController.m */; };
+		8D60B82C1FFDB5CC00B7E30C /* EH_CircleViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D60B82B1FFDB5CC00B7E30C /* EH_CircleViewModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +55,14 @@
 		8D3C24F31FFC7CA10007B6EB /* GestureUnClockUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GestureUnClockUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D3C24F71FFC7CA10007B6EB /* GestureUnClockUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GestureUnClockUITests.m; sourceTree = "<group>"; };
 		8D3C24F91FFC7CA10007B6EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8D3C25061FFCCDBF0007B6EB /* EH_GestureCircleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EH_GestureCircleView.h; sourceTree = "<group>"; };
+		8D3C25071FFCCDBF0007B6EB /* EH_GestureCircleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EH_GestureCircleView.m; sourceTree = "<group>"; };
+		8D3C25091FFCCF700007B6EB /* EH_GestureDragView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EH_GestureDragView.h; sourceTree = "<group>"; };
+		8D3C250A1FFCCF700007B6EB /* EH_GestureDragView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EH_GestureDragView.m; sourceTree = "<group>"; };
+		8D3C250C1FFCE5A10007B6EB /* EHGeatureSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EHGeatureSettingViewController.h; sourceTree = "<group>"; };
+		8D3C250D1FFCE5A10007B6EB /* EHGeatureSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EHGeatureSettingViewController.m; sourceTree = "<group>"; };
+		8D60B82A1FFDB5CC00B7E30C /* EH_CircleViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EH_CircleViewModel.h; sourceTree = "<group>"; };
+		8D60B82B1FFDB5CC00B7E30C /* EH_CircleViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EH_CircleViewModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +117,9 @@
 				8D3C24D41FFC7CA10007B6EB /* AppDelegate.m */,
 				8D3C24D61FFC7CA10007B6EB /* ViewController.h */,
 				8D3C24D71FFC7CA10007B6EB /* ViewController.m */,
+				8D3C250C1FFCE5A10007B6EB /* EHGeatureSettingViewController.h */,
+				8D3C250D1FFCE5A10007B6EB /* EHGeatureSettingViewController.m */,
+				8D3C25051FFCCD780007B6EB /* GestureUnClockView */,
 				8D3C24D91FFC7CA10007B6EB /* Main.storyboard */,
 				8D3C24DC1FFC7CA10007B6EB /* Assets.xcassets */,
 				8D3C24DE1FFC7CA10007B6EB /* LaunchScreen.storyboard */,
@@ -130,6 +145,19 @@
 				8D3C24F91FFC7CA10007B6EB /* Info.plist */,
 			);
 			path = GestureUnClockUITests;
+			sourceTree = "<group>";
+		};
+		8D3C25051FFCCD780007B6EB /* GestureUnClockView */ = {
+			isa = PBXGroup;
+			children = (
+				8D3C25061FFCCDBF0007B6EB /* EH_GestureCircleView.h */,
+				8D3C25071FFCCDBF0007B6EB /* EH_GestureCircleView.m */,
+				8D3C25091FFCCF700007B6EB /* EH_GestureDragView.h */,
+				8D3C250A1FFCCF700007B6EB /* EH_GestureDragView.m */,
+				8D60B82A1FFDB5CC00B7E30C /* EH_CircleViewModel.h */,
+				8D60B82B1FFDB5CC00B7E30C /* EH_CircleViewModel.m */,
+			);
+			path = GestureUnClockView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,8 +293,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D60B82C1FFDB5CC00B7E30C /* EH_CircleViewModel.m in Sources */,
 				8D3C24D81FFC7CA10007B6EB /* ViewController.m in Sources */,
+				8D3C25081FFCCDBF0007B6EB /* EH_GestureCircleView.m in Sources */,
+				8D3C250B1FFCCF700007B6EB /* EH_GestureDragView.m in Sources */,
 				8D3C24E31FFC7CA10007B6EB /* main.m in Sources */,
+				8D3C250E1FFCE5A10007B6EB /* EHGeatureSettingViewController.m in Sources */,
 				8D3C24D51FFC7CA10007B6EB /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
