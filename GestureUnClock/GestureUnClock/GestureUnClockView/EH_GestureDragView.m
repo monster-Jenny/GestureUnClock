@@ -15,6 +15,7 @@
 #define EH_ColumnCount             (3)              //排列多少列
 
 @interface EH_GestureDragView()
+<CAAnimationDelegate>
 
 @property (nonatomic, strong) NSMutableArray * rectArray;
 
@@ -75,9 +76,11 @@
 - (void)updateUILayoutWithTypeWithFirst:(BOOL)first
 {
     if (!first) {
-        self.isSecondSetting = YES;
+        if (!self.modifyNum) {
+            self.isSecondSetting = YES;
+        }
         for (NSValue * value in self.saveSelectedPointArray) {
-            [self changeCircleViewState:[value CGPointValue] state:Normal];
+            [self changeCircleViewState:[value CGPointValue] state:Normal nextPoint:CGPointZero];
         }
         [self clearPath];
     }
@@ -95,13 +98,15 @@
     for (int i = 0; i < EH_RowCount; i ++) {
         for (int j = 0; j < EH_ColumnCount; j ++) {
             
-            EH_GestureCircleView * circleView = [[EH_GestureCircleView alloc] initWithFrame:CGRectMake(EH_CircleMargin * (i + 1) + i * circleWidth, EH_CircleMargin * (j + 1) + j * circleWidth, circleWidth, circleWidth)];
+            EH_GestureCircleView * circleView = [[EH_GestureCircleView alloc] initWithFrame:CGRectMake(EH_CircleMargin * (j + 1) + j * circleWidth, EH_CircleMargin * (i + 1) + i * circleWidth, circleWidth, circleWidth)];
             [self addSubview:circleView];
             [circleView setNormalState];
+            circleView.layer.cornerRadius = circleWidth/2.0;
+            circleView.layer.masksToBounds = YES;
             [self.circleViewArray addObject:circleView];
             EH_CircleViewModel * model = [[EH_CircleViewModel alloc] init];
             model.number = i * EH_RowCount + j + 1;
-            model.circleRect = CGRectMake(EH_CircleMargin * (i + 1) + i * circleWidth, EH_CircleMargin * (j + 1) + j * circleWidth, circleWidth, circleWidth);
+            model.circleRect = CGRectMake(EH_CircleMargin * (j + 1) + j * circleWidth, EH_CircleMargin * (i + 1) + i * circleWidth, circleWidth, circleWidth);
             [self.rectArray addObject:model];
             circleView.tag = model.number;
         }
@@ -126,7 +131,7 @@
                 self.startPoint = checkPoint;
                 [self.saveSelectedPointArray addObject:[NSValue valueWithCGPoint:checkPoint]];
                 //需要将触碰的CircleView变化
-                [self changeCircleViewState:self.startPoint state:Selected];
+                [self changeCircleViewState:self.startPoint state:Selected nextPoint:CGPointZero];
                 [self drawDragPath];
             }
         }
@@ -140,17 +145,20 @@
                     if (![self checkIsRepeatPath:checkPoint]) {
                         [self.saveSelectedPointArray addObject:[NSValue valueWithCGPoint:checkPoint]];
                         //需要将触碰的CircleView变化
-                        [self changeCircleViewState:checkPoint state:Selected];
+                        [self changeCircleViewState:checkPoint state:Selected nextPoint:CGPointZero];
                     }
                     else
                     {
                         for (NSValue * value in self.saveSelectedPointArray) {
-                            if (checkPoint.x == [value CGPointValue].x && checkPoint.y == [value CGPointValue].y) {
-                                [self changeCircleViewState:[value CGPointValue] state:Selected];
+                            NSInteger index = [self.saveSelectedPointArray indexOfObject:value];
+                            CGPoint nextPoint = CGPointZero;
+                            if (index != self.saveSelectedPointArray.count - 1) {
+                                nextPoint = [[self.saveSelectedPointArray objectAtIndex:index + 1] CGPointValue];
+                                [self changeCircleViewState:[value CGPointValue] state:Disable nextPoint:nextPoint];
                             }
                             else
                             {
-                                [self changeCircleViewState:[value CGPointValue] state:Disable];
+                                [self changeCircleViewState:[value CGPointValue] state:Selected nextPoint:CGPointZero];
                             }
                         }
                     }
@@ -171,7 +179,7 @@
                 else if (self.saveSelectedPointArray.count < 4)
                 {
                     for (NSValue * value in self.saveSelectedPointArray) {
-                        [self changeCircleViewState:[value CGPointValue] state:Normal];
+                        [self changeCircleViewState:[value CGPointValue] state:Normal nextPoint:CGPointZero];
                     }
                     [self clearPath];
                     self.canDrag = NO;
@@ -204,6 +212,17 @@
     [self drawDragPath];
 }
 
+//提供两个点，返回一个它们的中点
+- (CGPoint)centerPointWithPointOne:(CGPoint)pointOne pointTwo:(CGPoint)pointTwo
+{
+    CGFloat x1 = fmax(pointOne.x, pointTwo.x);
+    CGFloat x2 = fmin(pointOne.x, pointTwo.x);
+    CGFloat y1 = fmax(pointOne.y, pointTwo.y);
+    CGFloat y2 = fmin(pointOne.y, pointTwo.y);
+    
+    return CGPointMake((x1+x2)/2, (y1 + y2)/2);
+}
+
 - (void)drawDragPath
 {
     CGMutablePathRef mutablePath = CGPathCreateMutable();
@@ -217,6 +236,16 @@
     }
     self.lineLayer.path = mutablePath;
     CGPathRelease(mutablePath);
+    
+//    CGContextRef ctx = UIGraphicsGetCurrentContext();
+//    CGContextAddRect(ctx, self.bounds);
+//    // 遍历所有子控件
+//    [self.subviews enumerateObjectsUsingBlock:^(EH_GestureCircleView *circle, NSUInteger idx, BOOL *stop) {
+//
+//        CGContextAddEllipseInRect(ctx, circle.frame); // 确定"剪裁"的形状
+//    }];
+//    //剪裁上下文
+//    CGContextEOClip(ctx);
 }
 
 - (CGPoint)checkConnectPoint:(CGPoint)point
@@ -245,7 +274,7 @@
     return result;
 }
 
-- (void)changeCircleViewState:(CGPoint)point state:(CircleState)state
+- (void)changeCircleViewState:(CGPoint)point state:(CircleState)state nextPoint:(CGPoint)nextPoint
 {
     for (EH_CircleViewModel * model in self.rectArray) {
         CGRect rect = model.circleRect;
@@ -260,6 +289,8 @@
             }
             else if (state == 2)
             {
+                CGFloat angle = atan2(nextPoint.y - point.y, nextPoint.x - point.x);
+                view.angle = angle;
                 [view setDisableState];
             }
             else if (state == 3)
@@ -297,13 +328,28 @@
 
 - (void)setErrorPath
 {
-    if (!self.isSecondSetting) {
-        for (NSValue * value in self.saveSelectedPointArray) {
-            [self changeCircleViewState:[value CGPointValue] state:Error];
-        }
-        self.lineLayer.strokeColor = EH_ErrorStateColor.CGColor;
-        [self drawDragPath];
+//    if (!self.isSecondSetting) {
+//
+//    }
+    for (NSValue * value in self.saveSelectedPointArray) {
+        [self changeCircleViewState:[value CGPointValue] state:Error nextPoint:CGPointZero];
     }
+    self.lineLayer.strokeColor = EH_ErrorStateColor.CGColor;
+    [self drawDragPath];
+    CABasicAnimation  * ba = [CABasicAnimation animationWithKeyPath:@"transform.translation.x"];
+    ba.delegate = self;
+    ba.duration = 0.1;
+    ba.fromValue = @(-10.0);
+    ba.toValue = @(10.0);
+    ba.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    ba.repeatCount = 2.0;
+    ba.autoreverses = YES;
+    [self.lineLayer addAnimation:ba forKey:@"lineLayer"];
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+    [self updateUILayoutWithTypeWithFirst:NO];
+    self.lineLayer.strokeColor = EH_NormalStateColor.CGColor;
 }
 
 @end

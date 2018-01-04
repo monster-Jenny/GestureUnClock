@@ -16,6 +16,8 @@
 
 @property (nonatomic, strong) CAShapeLayer * triangleLayer;
 
+@property (nonatomic, assign) BOOL rotate;
+
 @end
 
 @implementation EH_GestureCircleView
@@ -24,6 +26,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.rotate = NO;
         [self layoutUI];
     }
     return self;
@@ -31,6 +34,7 @@
 
 - (void)layoutUI
 {
+    self.backgroundColor = [UIColor whiteColor];
     self.subLayer = [CAShapeLayer layer];
     self.subLayer.backgroundColor = [UIColor clearColor].CGColor;
     self.subLayer.frame = self.bounds;
@@ -43,9 +47,9 @@
     self.triangleLayer.frame = self.bounds;
     self.triangleLayer.fillColor = EH_NormalStateColor.CGColor;
     self.triangleLayer.strokeColor = EH_NormalStateColor.CGColor;
-    self.triangleLayer.lineWidth = 2.0;
     [self getTrianglePath];
     self.triangleLayer.hidden = YES;
+    [self.layer addSublayer:self.triangleLayer];
 }
 
 - (CGPathRef)getPath{
@@ -60,26 +64,23 @@
 {
     //新建路径：三角形
     CGMutablePathRef trianglePathM = CGPathCreateMutable();
-    CGRect rect = self.frame;
-    CGFloat marginSelectedCirclev = 4.0f;
-    CGFloat w =8.0f;
-    CGFloat h =5.0f;
-    CGFloat topX = rect.origin.x + rect.size.width * .5f;
-//    CGFloat topY = rect.origin.y +(rect.size.width *.5f - h - marginSelectedCirclev - self.selectedRect.size.height *.5f);
-    CGFloat topY = rect.origin.y +(rect.size.width *.5f - h - marginSelectedCirclev - rect.size.height *.5f);
-    
-    CGPathMoveToPoint(trianglePathM, NULL, topX, topY);
-    
-    //添加左边点
-    CGFloat leftPointX = topX - w *.5f;
-    CGFloat leftPointY =topY + h;
-    CGPathAddLineToPoint(trianglePathM, NULL, leftPointX, leftPointY);
-    
-    //右边的点
-    CGFloat rightPointX = topX + w *.5f;
-    CGPathAddLineToPoint(trianglePathM, NULL, rightPointX, leftPointY);
+    CGFloat width = CGRectGetWidth(self.frame);
+    CGPoint point = CGPointMake(width/2.0, width/6.0);
+    CGFloat length = width/6.0;
+    CGPathMoveToPoint(trianglePathM, NULL, point.x, point.y);
+    CGPathAddLineToPoint(trianglePathM, NULL, point.x - length/2, point.y + length/2);
+    CGPathAddLineToPoint(trianglePathM, NULL, point.x + length/2, point.y + length/2);
     self.triangleLayer.path = trianglePathM;
     CGPathRelease(trianglePathM);
+}
+
+- (void)setAngle:(CGFloat)angle
+{
+    _angle = angle;
+//    if (!self.rotate) {
+        //整体旋转
+        self.transform = CGAffineTransformMakeRotation (angle + M_PI_2);
+//    }
 }
 
 - (void)setNormalState
@@ -87,6 +88,8 @@
     self.subLayer.strokeColor = EH_NormalStateColor.CGColor;
     self.solidCircle.hidden = YES;
     self.triangleLayer.hidden = YES;
+    self.triangleLayer.fillColor = EH_NormalStateColor.CGColor;
+    self.triangleLayer.strokeColor = EH_NormalStateColor.CGColor;
 }
 
 - (void)setSelectedState
@@ -95,14 +98,18 @@
     self.solidCircle.hidden = NO;
     self.solidCircle.backgroundColor = EH_NormalStateColor;
     self.triangleLayer.hidden = YES;
+    self.triangleLayer.fillColor = EH_NormalStateColor.CGColor;
+    self.triangleLayer.strokeColor = EH_NormalStateColor.CGColor;
 }
 
 - (void)setDisableState
 {//带个小三角
     self.subLayer.strokeColor = EH_NormalStateColor.CGColor;
     self.solidCircle.hidden = NO;
-    self.solidCircle.backgroundColor = EH_ErrorStateColor;
+    self.solidCircle.backgroundColor = EH_NormalStateColor;
     self.triangleLayer.hidden = NO;
+    self.triangleLayer.fillColor = EH_NormalStateColor.CGColor;
+    self.triangleLayer.strokeColor = EH_NormalStateColor.CGColor;
 }
 
 - (void)setErrorState
@@ -110,7 +117,8 @@
     self.subLayer.strokeColor = EH_ErrorStateColor.CGColor;
     self.solidCircle.hidden = NO;
     self.solidCircle.backgroundColor = EH_ErrorStateColor;
-    self.triangleLayer.hidden = YES;
+    self.triangleLayer.fillColor = EH_ErrorStateColor.CGColor;
+    self.triangleLayer.strokeColor = EH_ErrorStateColor.CGColor;
 }
 
 #pragma mark - getter

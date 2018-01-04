@@ -21,6 +21,8 @@ typedef NS_ENUM(NSUInteger, CircleState) {
 
 @interface EH_GestureCircleView : UIView
 
+@property (nonatomic, assign) CGFloat angle;
+
 - (void)setNormalState;
 
 - (void)setSelectedState;

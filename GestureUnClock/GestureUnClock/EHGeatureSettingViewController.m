@@ -75,13 +75,13 @@ NSString *const ErrorGestureNumber = @"密码错误，还可以输入3次";
         {
             if (self.isModifyNum) {
                 //密码输入错误，请重新输入
-                [dragView updateUILayoutWithTypeWithFirst:NO];
+                success = NO;
                 self.label.text = ErrorGestureNumber;
             }
             else
             {
                 //绘制和第一次不一样，请重新绘制
-                [dragView updateUILayoutWithTypeWithFirst:NO];
+                success = NO;
                 self.label.text = IsDifferentFromTheFirst;
             }
         }
