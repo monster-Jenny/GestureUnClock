@@ -61,7 +61,6 @@
 
 - (void)layoutUI
 {
-    [self updateUILayoutWithTypeWithFirst:YES];
     self.lineLayer = [[CAShapeLayer alloc] init];
     self.lineLayer.frame = self.bounds;
     self.lineLayer.backgroundColor = [UIColor clearColor].CGColor;
@@ -71,6 +70,7 @@
     self.lineLayer.strokeColor = EH_NormalStateColor.CGColor;
     self.lineLayer.fillColor = [UIColor clearColor].CGColor;
     [self.layer addSublayer:self.lineLayer];
+    [self updateUILayoutWithTypeWithFirst:YES];
 }
 
 - (void)updateUILayoutWithTypeWithFirst:(BOOL)first
